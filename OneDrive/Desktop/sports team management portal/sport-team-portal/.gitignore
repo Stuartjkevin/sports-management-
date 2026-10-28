@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Environment files (used in later phases)
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+*.log
+
+# Editor / OS
+.DS_Store
+Thumbs.db
