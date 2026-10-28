@@ -10,7 +10,9 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 const app = express();
 
 app.use(helmet()); // sets safe HTTP headers
-app.use(cors({ origin: env.clientUrl })); // only the React app may call this API from a browser
+// Only the React app may call this API from a browser. CLIENT_URL can list several
+// addresses separated by commas, e.g. "http://localhost:5173,https://my-app.vercel.app".
+app.use(cors({ origin: env.clientUrl.split(',').map((url) => url.trim().replace(/\/$/, '')) }));
 app.use(express.json({ limit: '100kb' })); // parses JSON request bodies into req.body
 if (env.nodeEnv !== 'test') app.use(requestLogger);
 

@@ -2,11 +2,12 @@
 // The ONLY place that decides where data is stored.
 // Controllers import these repositories and never touch storage directly.
 //
-// MongoDB phase: replace each createMemoryRepository(...) with a
-// Mongoose-based repository that has the same methods
-// (findAll, findById, findOne, create, update, updateMany, remove, count).
+// Data lives in MongoDB Atlas (one collection per repository). Each
+// collection is seeded with the demo data below the first time it is empty.
+// createMemoryRepository (store/memoryRepository.js) has the same methods
+// and can still be swapped in for offline testing.
 // =====================================================================
-import { createMemoryRepository } from '../store/memoryRepository.js';
+import { createMongoRepository } from '../store/mongoRepository.js';
 import { clubs } from '../data/clubs.js';
 import { teams } from '../data/teams.js';
 import { players } from '../data/players.js';
@@ -26,11 +27,11 @@ const notificationSeed = users.flatMap((u) =>
   notifications.map((n) => ({ ...n, id: `${n.id}-${u.id}`, userId: u.id })),
 );
 
-export const userRepository = createMemoryRepository(users);
-export const clubRepository = createMemoryRepository(clubs);
-export const teamRepository = createMemoryRepository(teams);
-export const playerRepository = createMemoryRepository(players);
-export const matchRepository = createMemoryRepository(matches);
-export const tournamentRepository = createMemoryRepository(tournamentSeed);
-export const trainingRepository = createMemoryRepository(sessionSeed);
-export const notificationRepository = createMemoryRepository(notificationSeed);
+export const userRepository = createMongoRepository('users', users);
+export const clubRepository = createMongoRepository('clubs', clubs);
+export const teamRepository = createMongoRepository('teams', teams);
+export const playerRepository = createMongoRepository('players', players);
+export const matchRepository = createMongoRepository('matches', matches);
+export const tournamentRepository = createMongoRepository('tournaments', tournamentSeed);
+export const trainingRepository = createMongoRepository('training_sessions', sessionSeed);
+export const notificationRepository = createMongoRepository('notifications', notificationSeed);
