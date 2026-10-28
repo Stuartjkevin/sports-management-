@@ -19,7 +19,7 @@ import { recommend } from '../controllers/selectionController.js';
 const api = Router();
 
 // ---------- Public ----------
-api.get('/health', (req, res) => res.json({ status: 'ok', storage: 'in-memory', time: new Date().toISOString() }));
+api.get('/health', (req, res) => res.json({ status: 'ok', storage: 'mongodb', time: new Date().toISOString() }));
 api.use('/auth', authRoutes);
 
 // ---------- Everything below needs a valid JWT ----------

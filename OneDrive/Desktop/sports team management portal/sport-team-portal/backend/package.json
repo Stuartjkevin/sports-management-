@@ -5,6 +5,9 @@
   "description": "Express REST API for the Sport Team Management Portal",
   "type": "module",
   "main": "src/server.js",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
