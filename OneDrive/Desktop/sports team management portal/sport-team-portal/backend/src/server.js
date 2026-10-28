@@ -1,21 +1,15 @@
-// Entry point: starts the HTTP server.
+// Entry point for running the API as a normal server (local / Render).
+// On Vercel, api/index.js is used instead and no server is started.
 import app from './app.js';
 import { env } from './config/env.js';
-import { MongoClient } from 'mongodb';
-
-if (!env.mongoUri) {
-  throw new Error('MONGODB_URI is missing in backend/.env.');
-}
-
-const mongoClient = new MongoClient(env.mongoUri, { serverSelectionTimeoutMS: 10000 });
+import { getDb, closeDb } from './config/db.js';
 
 try {
-  await mongoClient.connect();
-  await mongoClient.db(env.mongoDbName).command({ ping: 1 });
+  await (await getDb()).command({ ping: 1 });
   console.log(`MongoDB connected (database: ${env.mongoDbName})`);
 
   const server = app.listen(env.port, () => {
-    console.log(`API running at http://localhost:${env.port}  (storage: in-memory, data resets on restart)`);
+    console.log(`API running at http://localhost:${env.port}  (storage: MongoDB Atlas)`);
   });
 
   server.on('error', (err) => {
@@ -28,13 +22,13 @@ try {
   });
 
   const shutdown = async () => {
-    await mongoClient.close();
+    await closeDb();
     server.close();
   };
   process.once('SIGINT', shutdown);
   process.once('SIGTERM', shutdown);
 } catch (error) {
-  await mongoClient.close();
+  await closeDb();
   console.error(`MongoDB connection failed: ${error.message}`);
   process.exitCode = 1;
 }
